@@ -1,9 +1,22 @@
-// SPDX-License-Identifier: SEE LICENSE IN LICENSE
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.8;
 
-import { Script } from "forge-std/Script.sol";
-import { DevOpsTools } from "foundry-devops/src/DevOpsTools.sol";
+import {Script} from "forge-std/Script.sol";
+import {DevOpsTools} from "foundry-devops/src/DevOpsTools.sol";
+import {BasicNft} from "../src/BasicNft.sol";
 
-contract MiniBasicNft is Script {
-    function run() external {}
+contract MintBasicNft is Script {
+    string public constant PUG_URI =
+        "ipfs://bafybeig37ioir76s7mg5oobetncojcm3c3hxasyd4rvid4jqhy4gkaheg4/?filename=0-PUG.json";
+
+    function mintNftToken(address contractAddress) public {
+        vm.startBroadcast();
+        BasicNft(contractAddress).mintNft(PUG_URI);
+        vm.stopBroadcast();
+    }
+
+    function run() external {
+        address mostRecentlyDeployed = DevOpsTools.get_most_recent_deployment("BasicNft", block.chainid);
+        mintNftToken(mostRecentlyDeployed);
+    }
 }
